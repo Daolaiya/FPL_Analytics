@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+  <div>
+    <h3>This is my home page.</h3>
+  </div>
+
+  {% if session["curr_user"] %}
+    <div>
+      <a href="/admin"><button>Go to Admin</button></a>
+    </div>
+  {% endif %}
+</div>
+
+<p>
+  <a href="https://fantasy.premierleague.com/"><button>Go to FPL main website</button></a>
+</p>
+
+<p>
+  <a href="https://www.premierleague.com/tables"><button>See current table</button></a>
+</p>
+
+<p>
+  <a href="https://www.premierleague.com/fixtures"><button>See upcoming fixtures</button></a>
+</p>
+
+{% endblock %}

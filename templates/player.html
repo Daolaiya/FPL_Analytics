@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+  <h2>Name: {{player.first_name}} {{player.last_name}}</h2>
+  <h2>Club: {{club}}</h2>
+  
+  {% if signed_in %}
+    <div>
+      {% if in_team %}
+        <div>
+          <form action="/players/players-remove-1/{{player.id}}" method="POST">
+            <button id="remove">Remove from your team</button>
+          </form>
+        </div>
+      {% else %}
+        <div>
+          <form action="/players/players-add-1/{{player.id}}" method="POST">
+            <button id="add">Add to your team</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <div>
+    <img class="player-image" src="https://resources.premierleague.com/premierleague/photos/players/110x140/p{{player.photo_code}}.png" alt="Player image should go here">
+  </div>
+</div>
+
+{% endblock %}

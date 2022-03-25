@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>All Players</h2>
+
+<div>
+    <form id="search-form">
+      <label for="search-bar">Enter player name:</label>
+      <input id="search-bar" name="search-bar" type="text">
+    </form>
+</div>
+
+<div>
+    <ol id="player-list-players"></ol>
+</div>
+
+<script>
+    const $playerList = $("#player-list-players");
+    const $searchBar = $("#search-bar");
+    const $searchForm = $("#search-form");
+    // Note: I had to change this. the code wasnt working with localhost
+    // const BASE_URL = "http://localhost:5000";
+    const BASE_URL = "http://127.0.0.1:5000"
+
+    window.teamNames = []
+
+    let user_players = {{user_players}}
+
+    function playerInTeam(player){
+        return (
+            `<li id="${player.id}" class="in-team">
+                <div>
+                    <h2><a href="/players/${player.id}">${player.first_name} ${player.last_name}</a></h2>
+                </div>
+
+                <div>
+                    <h3><a href="/teams/${player.team_id}">${window.teamNames[player.team_id - 1]}</a></h3>
+                </div>
+
+                <div>
+                    <form class="player-form">
+                        <button>Remove from your team</button>
+                    </form>
+                </div>    
+            </li>`
+        );
+    }
+
+    function playerOutTeam(player){
+        return (
+            `<li id="${player.id}" class="out-team">
+                <div>
+                    <h2><a href="/players/${player.id}">${player.first_name} ${player.last_name}</a></h2>
+                </div>
+
+                <div>
+                    <h3><a href="/teams/${player.team_id}">${window.teamNames[player.team_id - 1]}</a></h3>
+                </div>
+
+                <div>
+                    <form class="player-form">
+                        <button>Add to your team</button>
+                    </form>
+                </div>
+            </li>`
+        );
+    }
+
+    function justPlayer(player){
+        return (
+            `<li id="${player.id}" class="out-team">
+                <div>
+                    <h2><a href="/players/${player.id}">${player.first_name} ${player.last_name}</a></h2>
+                </div>
+
+                <div>
+                    <h3><a href="/teams/${player.team_id}">${window.teamNames[player.team_id - 1]}</a></h3>
+                </div>            
+            </li>`
+        );
+    }
+
+    $searchForm.on("submit", function(evt){
+        evt.preventDefault();
+        return false;
+    });
+
+    $(async function(){
+        let res2 = await axios.get(`${BASE_URL}/teams/names`);
+        
+        res2.data.teams.forEach((value) => {
+            window.teamNames.push(value);
+        });
+
+        let res = await axios.get(`${BASE_URL}/players/players-db-search`, {params: { name: $searchBar.val() }});
+    
+        for (player of res.data.player_list){
+            if ({{logged_in}}){
+                if (user_players.includes(player.id)){
+                    $playerList.append($(playerInTeam(player)));
+                } else {
+                    $playerList.append($(playerOutTeam(player)));
+                }
+            } else {
+                $playerList.append($(justPlayer(player)));
+            }
+        }
+    });
+
+    $playerList.on("submit", ".player-form", async function(evt){
+        evt.preventDefault();
+        
+        let $playerForm = evt.target;
+        let $closestLi = evt.target.closest("li");
+        let inTeam = $closestLi.classList.contains("in-team");
+        
+        $closestLi.classList.toggle("in-team");
+        $closestLi.classList.toggle("out-team");
+
+        if (inTeam){
+            await axios.post(`${BASE_URL}/players/players-remove-2/${$closestLi.id}`);
+            
+            user_players = user_players.filter(item => item !== $closestLi.id);
+
+            $playerForm.innerHTML = (
+                `<button> Add to your team </button>`
+            );
+        } else {
+            await axios.post(`${BASE_URL}/players/players-add-2/${$closestLi.id}`);
+            
+            user_players.push($closestLi.id)
+
+            $playerForm.innerHTML = (
+                `<button> Remove from your team </button>`
+            );
+        }
+    });
+    
+    $searchBar.on("change paste keyup cut select", async function() {
+        let res = await axios.get(`${BASE_URL}/players/players-db-search`, {params: { name: $searchBar.val() }});
+    
+        if (!($searchBar.val().trim()) || ($searchBar.val()==="")){
+            $playerList.empty();
+                
+            for (player of res.data.player_list){
+                if ({{logged_in}}){
+                    if (user_players.includes(player.id)){
+                        $playerList.append($(playerInTeam(player)));
+                    } else {
+                        $playerList.append($(playerOutTeam(player)));
+                    }
+                } else {
+                    $playerList.append($(justPlayer(player)));
+                }
+            }
+        } else {
+            if (!res.data.player_list.length){
+                $playerList.empty();
+            } else {
+                $playerList.empty();
+                
+                for (player of res.data.player_list){
+                    if ({{logged_in}}){
+                        if (user_players.includes(player.id)){
+                            $playerList.append($(playerInTeam(player)));
+                        } else {
+                            $playerList.append($(playerOutTeam(player)));
+                        }
+                    } else {
+                        $playerList.append($(justPlayer(player)));
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

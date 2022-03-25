@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>My FPL Team - {{user.team_name}}</h2>
+
+<ol id="player-list-my-team">
+  {% for player in user_players %}
+    <li id="{{player.id}}">
+      <div>
+        <h3><a href="/players/{{player.id}}">{{player.first_name}} {{player.last_name}}</a></h3>
+      </div>
+      
+      <div>
+        <h4><a href="/teams/{{player.team_id}}">{{team_names[player.team_id - 1]}}</a></h4>
+      </div>
+
+      <div>
+        <img class="player-image" src="https://resources.premierleague.com/premierleague/photos/players/110x140/p{{player.photo_code}}.png" alt="Player image should go here">
+      </div>
+      
+      <div>
+        <form action="/players/players-remove-2/{{player.id}}" method="POST">
+          <button id="remove">Remove from your team</button>
+        </form>
+      </div>
+
+      <div>
+        <h3>
+          <p>
+            Statistics:
+          </p>
+        </h3>
+        <ul>
+          <li>Points per game: {{player.ppg}}</li>
+          <li>Player cost: {{player.now_cost}}</li>
+          <li>Total Points: {{player.total_points}}</li>
+        </ul>
+      </div>
+      
+  
+    </li>
+  {% endfor %}
+</ol>
+
+{% endblock %}

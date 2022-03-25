@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Player Search:</h2>
+
+<form id="search-form">
+  <label for="search-bar">Enter player name:</label>
+  <input id="search-bar" name="search-bar" type="text">
+</form>
+
+<hr>
+
+<div>
+  <h3>Players:</h3>
+  <ol id="player-list"></ol>
+</div>
+
+{% endblock %}

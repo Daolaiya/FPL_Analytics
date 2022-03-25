@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Add a form that when submitted, logs in a user!</h2>
+
+<form method="POST">
+    {% include "form.html" %}
+    <hr>
+    <button>Sign in</button>
+</form>
+
+<div>
+    <a href="/users/register"><button>Not a user? Sign up instead</button></a>
+</div>
+
+{% endblock %}
