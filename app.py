@@ -22,8 +22,8 @@ CORS(app)
 
 connect_db(app)
 
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 
 CURR_USER_KEY = "curr_user"
 team_names = {}
