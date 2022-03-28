@@ -115,6 +115,7 @@ def log_in_user():
 
         if user:
             do_log_in(user)
+            print("ID: ", user.id, session[CURR_USER_KEY])
             flash(f"User {user.user_name} logged in.")
             return redirect(url_for("root"))
         else:
@@ -198,6 +199,7 @@ def my_team():
         team_names = [team.name for team in Team.query.all()]
         user_id = int(session[CURR_USER_KEY])
         user = User.query.get(user_id)
+        print(user_id, user, session[CURR_USER_KEY])
         ids = user.user_players_list()
         user_players = [Player.query.get(i) for i in ids]
         return render_template("my_team.html", user_players=user_players, user=user, team_names=team_names)
