@@ -22,11 +22,9 @@ CORS(app)
 
 connect_db(app)
 
-# db.create_all()
-
 CURR_USER_KEY = "curr_user"
 team_names = {}
-BASE_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
+FPL_BASE_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
 
 ##############################################################################
 # Helper functions
@@ -48,7 +46,7 @@ def get_all_data():
     db.drop_all()
     db.create_all()
 
-    all_data = requests.get(BASE_URL).json()
+    all_data = requests.get(FPL_BASE_URL).json()
 
     for team in all_data["teams"]:
         db.session.add(Team(id=team["id"], name=team["name"], photo_code=team["code"]))
@@ -252,15 +250,16 @@ def change_password():
 # Player routes
 @app.route("/players")
 def show_all_players():
-    """Return a list of players."""    
+    """Return a list of players."""
+    APP_BASE_URL = os.environ.get("APP_BASE_URL", "http://127.0.0.1:5000")    
     players = Player.query.all()
     
     if check_logged_in():
         user = User.query.get(session[CURR_USER_KEY])
         user_players = user.user_players_list()
-        return render_template("players.html", players=players, user_players=user_players, logged_in=json.dumps(True))
+        return render_template("players.html", players=players, user_players=user_players, logged_in=json.dumps(True), BASE_URL=APP_BASE_URL)
     else:
-        return render_template("players.html", players=players, user_players=[], logged_in=json.dumps(False))
+        return render_template("players.html", players=players, user_players=[], logged_in=json.dumps(False), BASE_URL=APP_BASE_URL)
 
 @app.route("/players/<int:player_id>")
 def show_player(player_id):
