@@ -22,7 +22,6 @@ CORS(app)
 
 connect_db(app)
 
-# db.drop_all()
 # db.create_all()
 
 CURR_USER_KEY = "curr_user"
@@ -68,7 +67,7 @@ def get_all_data():
     
     db.session.add(user)
     db.session.commit()
-
+    
 ###############################################################################################################################################################################
 # General routes
 @app.route("/")
