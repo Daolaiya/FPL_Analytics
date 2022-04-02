@@ -1,4 +1,5 @@
 ## FPL Analytics App
+This app is deployed at: https://fpl-analytics-damilola-olaiya.herokuapp.com/users/my-team
 
 To get this application running, make sure you do the following in the Terminal:
 
