@@ -369,4 +369,3 @@ def team_names_query():
     return jsonify(teams=teams)
 
 ##############################################################################
-# For anything else, reference Database DJ or Warbler
